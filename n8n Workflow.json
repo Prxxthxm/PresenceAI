@@ -1,0 +1,1007 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "63ad2e78-3baa-4b21-be97-ef66ae2f3f2f",
+              "leftValue": "={{$json[\"length\"]}}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        360,
+        -140
+      ],
+      "id": "9894771a-a007-42f2-b3cb-7735453ec3bd",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"date\": \"{{ new Date($json[\\\"timestamp\\\"]).toISOString().split(\\\"T\\\")[0] }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        -140
+      ],
+      "id": "d48f4128-8001-4443-9989-009a273ba33f",
+      "name": "Set"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "attendance",
+          "mode": "list",
+          "cachedResultName": "attendance"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "employee_id",
+              "value": "={{$json[\"employee_id\"]}}"
+            },
+            {
+              "column": "date",
+              "value": "={{$json[\"date\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        160,
+        -140
+      ],
+      "id": "88309e3e-2183-47c3-b20a-c8e84104fc89",
+      "name": "Initialise DB",
+      "credentials": {
+        "postgres": {
+          "id": "Bszh6psdYW4ZjgCK",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "attendance",
+          "mode": "list",
+          "cachedResultName": "attendance"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "check_out": "={{$json[\"timestamp\"]}}",
+            "date": "={{$json[\"date\"]}}",
+            "employee_id": "={{$json[\"employee_id\"]}}"
+          },
+          "matchingColumns": [
+            "employee_id",
+            "date"
+          ],
+          "schema": [
+            {
+              "id": "employee_id",
+              "displayName": "employee_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "check_in",
+              "displayName": "check_in",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "check_out",
+              "displayName": "check_out",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        640,
+        -160
+      ],
+      "id": "9f49f7fa-9689-4807-8cde-b1aa96dc7ec1",
+      "name": "Check Out",
+      "credentials": {
+        "postgres": {
+          "id": "Bszh6psdYW4ZjgCK",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "attendance",
+          "mode": "list",
+          "cachedResultName": "attendance"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "employee_id": "={{$json[\"employee_id\"]}}",
+            "date": "={{$json[\"date\"]}}",
+            "status": "Present",
+            "check_in": "={{$json[\"timestamp\"]}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "employee_id",
+              "displayName": "employee_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "check_in",
+              "displayName": "check_in",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "check_out",
+              "displayName": "check_out",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        640,
+        20
+      ],
+      "id": "07cc5c0c-e4a6-48ab-9214-e0755f66b372",
+      "name": "Check In",
+      "credentials": {
+        "postgres": {
+          "id": "Bszh6psdYW4ZjgCK",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT DISTINCT employee_id FROM attendance;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        20,
+        180
+      ],
+      "id": "24bcb36b-9225-467a-af52-d7a457e0dfb0",
+      "name": "Obtain Employee List",
+      "credentials": {
+        "postgres": {
+          "id": "Bszh6psdYW4ZjgCK",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        240,
+        180
+      ],
+      "id": "799f0679-3a22-40e8-8c11-f407a416391f",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b1a02a43-c3ba-46b3-b70e-44b07a135b7e",
+              "leftValue": "={{$json[\"length\"]}}",
+              "rightValue": "0",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        200
+      ],
+      "id": "a78064ad-7c22-4590-be5a-df8399e17e1b",
+      "name": "Check Employee Presence"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "attendance",
+          "mode": "list",
+          "cachedResultName": "attendance"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "employee_id",
+              "value": "={{$json[\"employee_id\"]}}"
+            },
+            {
+              "column": "date",
+              "value": "={{ new Date().toISOString().split(\"T\")[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        500,
+        200
+      ],
+      "id": "f3690576-a96f-49b5-b884-1a4f5a8936ff",
+      "name": "Retrieve Employee Records",
+      "credentials": {
+        "postgres": {
+          "id": "Bszh6psdYW4ZjgCK",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "attendance",
+          "mode": "list",
+          "cachedResultName": "attendance"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "employee_id": "{{$json[\"employee_id\"]}} ",
+            "date": "={{ new Date().toISOString().split(\"T\")[0] }}\n",
+            "status": "Absent"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "employee_id",
+              "displayName": "employee_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "check_in",
+              "displayName": "check_in",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "check_out",
+              "displayName": "check_out",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        960,
+        200
+      ],
+      "id": "b70050ee-956c-400f-ad55-89f748b3377a",
+      "name": "Update Records",
+      "credentials": {
+        "postgres": {
+          "id": "Bszh6psdYW4ZjgCK",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) AS absences\nFROM attendance\nWHERE employee_id = '{{$json[\"employee_id\"]}}'\nAND status = 'absent';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1140,
+        200
+      ],
+      "id": "cba49b43-57e4-4ea8-9ffe-2402b370f24f",
+      "name": "Record total absences",
+      "credentials": {
+        "postgres": {
+          "id": "Bszh6psdYW4ZjgCK",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a34f9944-98aa-4d91-977a-9173e7b5e25d",
+              "leftValue": "={{ $json[\"absences\"] }}",
+              "rightValue": "4",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1340,
+        200
+      ],
+      "id": "a81d330f-a5f7-4f56-8c91-91932d239379",
+      "name": "Warning Mail Threshold"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d861f2c6-9216-4c10-bbca-08c8816bd3ce",
+              "leftValue": "={{ $json[\"absences\"]}}",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1540,
+        220
+      ],
+      "id": "cb202750-6d78-4084-9c64-40ba323cc1b2",
+      "name": "Admin Report"
+    },
+    {
+      "parameters": {
+        "sendTo": "=admin@company.com",
+        "subject": "Escalation: Repeated Absences Detected",
+        "message": "=<p>Dear Admin,</p>  <p>Employee <strong>{{$json[\"employee_id\"]}}</strong> has been marked absent more than 5 times.</p> <p>Please review and take necessary action.</p>  <p>Regards,<br>HR Automation System</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1780,
+        200
+      ],
+      "id": "bcb8b6ae-b9d3-4a1a-b56f-d3e3a5a02616",
+      "name": "Report Mail",
+      "webhookId": "aff35eea-2c3a-4fec-8ffa-29359e7d5de8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "OhLO6aNJ90qsy8uI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json[\"employee_id\"]}}@company.com",
+        "subject": "Attendance Violation",
+        "message": "=<p>Dear {{$json[\"employee_id\"]}},</p>  <p>You have been marked absent <strong>4 times</strong>.</p> <p>Please ensure regular attendance to avoid further action.</p>  <p>Regards,<br>HR Automation</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1340,
+        380
+      ],
+      "id": "e98ff0de-90cb-498b-a9d4-4d46c9744a30",
+      "name": "Warning Mail",
+      "webhookId": "ba8f06e8-9781-47e9-a77f-f208c072ca49",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "OhLO6aNJ90qsy8uI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "/attendance",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        -140
+      ],
+      "id": "5d61641b-00d2-4801-a1b5-e1c115dba9a8",
+      "name": "Face Recognition Input",
+      "webhookId": "7208ce83-c2b1-4201-b16a-9f735f883ad2"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23,
+              "triggerAtMinute": 59
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -180,
+        180
+      ],
+      "id": "78e4bfc3-0b11-4bdf-a764-a8d53cc98960",
+      "name": "Daily Absence Report"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtHour": 23,
+              "triggerAtMinute": 59
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        -140
+      ],
+      "id": "1ffff126-fcbe-453d-a242-3324795ad783",
+      "name": "Weekly Report"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT employee_id, date, status\nFROM attendance\nWHERE date >= CURRENT_DATE - INTERVAL '7 days'\nORDER BY employee_id, date;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1100,
+        -140
+      ],
+      "id": "c6452296-7e01-479f-809c-6782d806abf0",
+      "name": "Weekly Leaves Calculation",
+      "credentials": {
+        "postgres": {
+          "id": "Bszh6psdYW4ZjgCK",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        20
+      ],
+      "id": "08f11267-4f84-4cf5-b472-ee577d2eda0a",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "L7huLN1aTrJApTd0",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "admin@company.com",
+        "subject": "Weekly Attendance Summary Report",
+        "message": "=<p>Dear Admin,</p>  <p>Here is the AI-generated summary of employee attendance for the past week:</p>  <blockquote> {{ $json[\"message\"][\"content\"] }} </blockquote>  <p>Regards,<br>HR Automation System</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1900,
+        -140
+      ],
+      "id": "50013641-fee7-4162-9dd8-b5d908a02bdb",
+      "name": "Mail Report",
+      "webhookId": "edc415fb-4fcc-4dbe-b467-a6f92219d63a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "OhLO6aNJ90qsy8uI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an HR assistant. Your job is to analyze attendance data and generate weekly summaries for the admin."
+            },
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "=Here is the attendance data for the past 7 days:\\n\\n{{ JSON.stringify($json) }}\\n\\nPlease summarize key insights such as employees with repeated absences or late check-ins, general attendance trends, and suggest any actions that should be taken by HR."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1540,
+        -140
+      ],
+      "id": "96cf4063-3d43-4979-9600-1c3824ad72fc",
+      "name": "Report Generation Prompt"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1320,
+        -140
+      ],
+      "id": "1360530d-6f3e-42fb-97c3-100e33223734",
+      "name": "Access Database",
+      "webhookId": "b2477ee1-1e56-420c-8c99-034b4b53ab48"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Check Out",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check In",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set": {
+      "main": [
+        [
+          {
+            "node": "Initialise DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initialise DB": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtain Employee List": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Retrieve Employee Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Employee Presence": {
+      "main": [
+        [
+          {
+            "node": "Update Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve Employee Records": {
+      "main": [
+        [
+          {
+            "node": "Check Employee Presence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Records": {
+      "main": [
+        [
+          {
+            "node": "Record total absences",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Record total absences": {
+      "main": [
+        [
+          {
+            "node": "Warning Mail Threshold",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Warning Mail Threshold": {
+      "main": [
+        [
+          {
+            "node": "Warning Mail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Admin Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Admin Report": {
+      "main": [
+        [
+          {
+            "node": "Report Mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Warning Mail": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Face Recognition Input": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily Absence Report": {
+      "main": [
+        [
+          {
+            "node": "Obtain Employee List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Weekly Report": {
+      "main": [
+        [
+          {
+            "node": "Weekly Leaves Calculation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Report Generation Prompt",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Report Generation Prompt": {
+      "main": [
+        [
+          {
+            "node": "Mail Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Access Database": {
+      "main": [
+        [
+          {
+            "node": "Report Generation Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "da105181-de11-42aa-bb89-8bfbeaeaedb9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e8b92e4983279bf42e0a88013e663557bd8b0d6fbeb35601b8c32a99d1af0fc0"
+  },
+  "id": "KwnnqI5tsjXLelmE",
+  "tags": []
+}
