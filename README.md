@@ -27,5 +27,5 @@
 ## Files
 
 - **n8n Workflow.json**: The exported workflow from n8n platform.
-- **employee_pics**: Sample images of employees & weights for the facial recognition model
-- **face_id.py**: Script for detection of employee and triggerring workflow activation
+- **employee_pics**: Sample images of employees & facial recognition model trained on embeddings
+- **face_id.py**: Script for detection of employee and triggering workflow activation
